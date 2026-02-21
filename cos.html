@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UNILESA CBT – COS 101</title>
+
+<style>
+body{
+  margin:0;
+  font-family:Arial, sans-serif;
+  background:#f4f6f8;
+}
+
+.header{
+  background:#1b5e20;
+  color:white;
+  padding:15px;
+  display:flex;
+  justify-content:space-between;
+  font-size:14px;
+}
+
+.container{
+  max-width:700px;
+  margin:30px auto;
+  background:white;
+  padding:25px;
+  border-radius:12px;
+  box-shadow:0 4px 10px rgba(0,0,0,.1);
+}
+
+.question{
+  font-weight:bold;
+  margin-bottom:15px;
+}
+
+.option{
+  display:block;
+  padding:10px;
+  border:1px solid #ddd;
+  border-radius:6px;
+  margin-top:8px;
+  cursor:pointer;
+}
+
+.option:hover{
+  background:#f1f1f1;
+}
+
+.nav-buttons{
+  display:flex;
+  justify-content:space-between;
+  margin-top:20px;
+}
+
+button{
+  padding:10px 18px;
+  border:none;
+  border-radius:8px;
+  cursor:pointer;
+  font-weight:bold;
+}
+
+.number-panel{
+  display:grid;
+  grid-template-columns:repeat(6,1fr);
+  gap:6px;
+  margin-bottom:20px;
+}
+
+.number-btn{
+  padding:8px;
+  border:none;
+  border-radius:6px;
+  background:#ddd;
+  cursor:pointer;
+  font-weight:bold;
+}
+
+.number-btn.answered{
+  background:#81c784;
+  color:white;
+}
+
+.number-btn.active{
+  background:#1b5e20;
+  color:white;
+}
+
+.prev-btn{
+  background:#ccc;
+}
+
+.next-btn{
+  background:#2e7d32;
+  color:white;
+}
+
+.submit-btn{
+  background:#1b5e20;
+  color:white;
+  width:100%;
+  margin-top:20px;
+}
+
+.correct{
+  background:#d4f7dc;
+  border-left:5px solid green;
+}
+
+.wrong{
+  background:#ffd6d6;
+  border-left:5px solid red;
+}
+
+.hidden{
+  display:none;
+}
+
+.footer{
+  text-align:center;
+  font-size:12px;
+  color:#888;
+  margin:20px 0;
+}
+</style>
+</head>
+
+<body>
+
+<div class="header">
+  <div>COS 101 – Intro to Computing</div>
+  <div>Practice Questions</div>
+</div>
+
+<div class="container" id="quizPage">
+
+  <div id="numberPanel" class="number-panel"></div>
+
+  <div id="questionBox"></div>
+  <div id="optionsBox"></div>
+
+  <div class="nav-buttons">
+    <button class="prev-btn" onclick="prevQuestion()">Previous</button>
+    <button class="next-btn" onclick="nextQuestion()">Next</button>
+  </div>
+
+  <button class="submit-btn" onclick="submitQuiz()">Submit Exam</button>
+</div>
+
+<div class="container hidden" id="resultPage">
+  <h2>Exam Completed</h2>
+  <h3 id="score"></h3>
+  <button class="submit-btn" onclick="showCorrections()">View Corrections</button>
+</div>
+
+<div class="container hidden" id="correctionPage">
+  <h2>Corrections</h2>
+  <div id="corrections"></div>
+</div>
+
+<div class="footer">
+  Developed by Oluwaferanmi || Physiology Department
+</div>
+
+<script>
+const questions = [
+  {q:"Algorithm refers to?", o:["A programming language","Step-by-step procedure to solve a problem","Internet protocol","Hardware device"], a:1},
+  {q:"High-level programming languages include:", o:["Binary code","Assembly only","Python, Java, C++","Machine language only"], a:2},
+  {q:"Information is:", o:["Raw facts only","Hardware components","Processed data that is meaningful","Spreadsheet formulas"], a:2},
+  {q:"Which of the following is an example of an input device?", o:["Printer","Keyboard","Speaker","Monitor"], a:1},
+  {q:"LAN stands for:", o:["Large Area Network","Local Access Network","Local Area Network","Limited Area Network"], a:2},
+  {q:"WAN stands for:", o:["Wide Area Network","Wireless Access Network","World Area Network","Web Area Network"], a:0},
+  {q:"Which of the following is NOT a network protocol?", o:["TCP/IP","HTTP","FTP","Excel"], a:3},
+  {q:"Which topology connects all devices to a single central hub?", o:["Ring","Star","Bus","Mesh"], a:1},
+  {q:"Hybrid topology combines:", o:["Only star and bus","Two or more different topologies","Only LAN and WAN","Only mesh and ring"], a:1},
+  {q:"Which topology is easiest for troubleshooting?", o:["Bus","Ring","Star","Mesh"], a:2},
+  {q:"Page orientation in Word can be:", o:["Top or bottom","Left or right only","Portrait or landscape","Vertical only"], a:2},
+  {q:"Track changes is used to:", o:["Save a file","Monitor edits made by collaborators","Format a table","Insert an image"], a:1},
+  {q:"Word processing software allows inserting:", o:["Tables, charts, images","Only numbers","Only text","Only hyperlinks"], a:0},
+  {q:"In Excel, the intersection of a row and a column is called:", o:["Sheet","Range","Cell","Table"], a:2},
+  {q:"Which of the following is NOT a type of Excel data?", o:["Numbers","Printer","Text","Date"], a:1},
+  {q:"Formula in Excel is used to:", o:["Format text","Perform calculations","Insert images","Save files"], a:1},
+  {q:"What does =SUM(A1:A5) do?", o:["Multiplies values","Adds values","Counts cells","Divides values"], a:1},
+  {q:"The fill handle in Excel is used to:", o:["Delete data","Insert sheets","Copy or extend formulas/data","Format cells"], a:2},
+  {q:"Conditional formatting is used to:", o:["Insert graphs","Highlight cells based on conditions","Save workbook","Sort data only"], a:1},
+  {q:"Shortcut to insert current date in Excel is:", o:["Ctrl + D","Ctrl + ;","Ctrl + C","Ctrl + Shift + D"], a:1},
+  {q:"Which of these is a valid internet activity?", o:["Using a stapler","Sending emails","Writing offline only","Printing locally"], a:1},
+  {q:"To select non-adjacent cells, you can use:", o:["Ctrl + Click","Shift + Click","Alt + Click","Enter key"], a:0},
+  {q:"Which of the following is a search engine?", o:["Google","Excel","Microsoft Word","Windows"], a:0},
+  {q:"Email stands for:", o:["Easy Mail","Electronic Mail","Emailing software","External Mail"], a:1},
+  {q:"The address www.example.com is called a:", o:["IP Address","File path","Domain name","URL only"], a:2},
+  {q:"Downloading a file means:", o:["Sending data to the Internet","Deleting a file","Printing a file","Copying data from the Internet to your device"], a:3},
+  {q:"Uploading a file refers to:", o:["Saving locally","Copying to another folder","Sending data from your device to the Internet","Editing online"], a:2},
+  {q:"Track changes in Word:", o:["Saves the file","Formats text","Opens Excel","Highlights edits for review"], a:3},
+  {q:"Which of these is NOT a page orientation?", o:["Portrait","Sideways","Landscape","Both A & B"], a:1},
+  {q:"Application software includes:", o:["Word, Excel, PowerPoint","CPU","RAM","Hard disk"], a:0},
+];
+
+let currentQuestion = 0;
+let answers = [];
+
+function loadQuestion(index){
+  const q = questions[index];
+
+  document.getElementById("questionBox").innerHTML =
+    `<div class="question">${index+1}. ${q.q}</div>`;
+
+  let optionsHTML = "";
+  q.o.forEach((opt,i)=>{
+    optionsHTML += `
+      <label class="option">
+        <input type="radio" name="option" value="${i}"
+        ${answers[index] === i ? "checked" : ""}>
+        ${opt}
+      </label>
+    `;
+  });
+
+  document.getElementById("optionsBox").innerHTML = optionsHTML;
+
+  updatePanel();
+}
+
+function updatePanel(){
+  buildNumberPanel();
+}
+
+function saveAnswer(){
+  const selected = document.querySelector('input[name="option"]:checked');
+  if(selected){
+    answers[currentQuestion] = Number(selected.value);
+  }
+}
+
+function buildNumberPanel(){
+  const panel = document.getElementById("numberPanel");
+  panel.innerHTML = "";
+
+  questions.forEach((_,i)=>{
+    const btn = document.createElement("button");
+    btn.innerText = i+1;
+    btn.classList.add("number-btn");
+
+    if(answers[i] !== undefined){
+      btn.classList.add("answered");
+    }
+
+    if(i === currentQuestion){
+      btn.classList.add("active");
+    }
+
+    btn.onclick = function(){
+      saveAnswer();
+      currentQuestion = i;
+      loadQuestion(currentQuestion);
+      updatePanel();
+    };
+
+    panel.appendChild(btn);
+  });
+}
+
+function nextQuestion(){
+  saveAnswer();
+  if(currentQuestion < questions.length-1){
+    currentQuestion++;
+    loadQuestion(currentQuestion);
+  }
+}
+
+function prevQuestion(){
+  saveAnswer();
+  if(currentQuestion > 0){
+    currentQuestion--;
+    loadQuestion(currentQuestion);
+  }
+}
+
+function submitQuiz(){
+  saveAnswer();
+  let score = 0;
+
+  questions.forEach((q,i)=>{
+    if(answers[i] === q.a){
+      score++;
+    }
+  });
+
+  document.getElementById("quizPage").classList.add("hidden");
+  document.getElementById("resultPage").classList.remove("hidden");
+  document.getElementById("score").innerText =
+    "Your Score: " + score + " / " + questions.length;
+}
+
+function showCorrections(){
+  document.getElementById("resultPage").classList.add("hidden");
+  document.getElementById("correctionPage").classList.remove("hidden");
+
+  const cDiv = document.getElementById("corrections");
+  cDiv.innerHTML = "";
+
+  questions.forEach((q,i)=>{
+    let html = `<div class="question">${i+1}. ${q.q}</div>`;
+
+    q.o.forEach((opt,idx)=>{
+      if(idx === q.a){
+        html += `<div class="option correct">${opt} ✓</div>`;
+      }else if(idx === answers[i]){
+        html += `<div class="option wrong">${opt} ✗</div>`;
+      }else{
+        html += `<div class="option">${opt}</div>`;
+      }
+    });
+
+    cDiv.innerHTML += html;
+  });
+}
+
+buildNumberPanel();
+loadQuestion(0);
+</script>
+
+</body>
+</html>

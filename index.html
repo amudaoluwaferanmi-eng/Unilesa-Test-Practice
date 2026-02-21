@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>UNILESA CBT Portal</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f4f6f9;
+    }
+
+    /* HEADER */
+    .header {
+      background: #1b5e20;
+      color: white;
+      padding: 15px;
+      text-align: center;
+      font-size: 20px;
+      font-weight: bold;
+      letter-spacing: 1px;
+    }
+
+    /* MAIN CONTAINER */
+    .container {
+      max-width: 600px;
+      margin: 30px auto;
+      padding: 20px;
+    }
+
+    h3 {
+      text-align: center;
+      color: #333;
+    }
+
+    /* COURSE CARD */
+    .course {
+      background: white;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      transition: 0.3s ease;
+    }
+
+    .course:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+    }
+
+    .course-title {
+      font-weight: bold;
+      font-size: 16px;
+      margin-bottom: 8px;
+      color: #1b5e20;
+    }
+
+    .course small {
+      color: #777;
+    }
+
+    /* START BUTTON */
+    .start-btn {
+      background: linear-gradient(135deg, #2e7d32, #43a047);
+      color: white;
+      padding: 12px;
+      font-size: 14px;
+      border: none;
+      border-radius: 25px;
+      width: 100%;
+      margin-top: 15px;
+      cursor: pointer;
+      transition: 0.3s ease;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+    }
+
+    .start-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 18px rgba(0,0,0,0.25);
+    }
+
+    .start-btn:active {
+      transform: scale(0.97);
+    }
+
+    /* FOOTER */
+    .footer {
+      text-align: center;
+      font-size: 12px;
+      color: #888;
+      margin-top: 40px;
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 600px) {
+      .container {
+        padding: 15px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="header">
+  UNILESA CBT Portal
+</div>
+
+<div class="container">
+  <h3>Select a Course</h3>
+
+  <div class="course">
+    <div class="course-title">CSC 101 – Introduction to Computing</div>
+    <small>Practice examination only</small>
+    <button class="start-btn" onclick="goToPage('cos.html')">
+      Start Examination
+    </button>
+  </div>
+
+  <div class="course">
+    <div class="course-title">FRE 199 – Basic French</div>
+    <small>Practice examination only</small>
+    <button class="start-btn" onclick="goToPage('fre199.html')">
+      Start Examination
+    </button>
+  </div>
+
+  <div class="footer">
+    Developed by Oluwaferanmi || Physiology Department
+  </div>
+</div>
+
+<script>
+  function goToPage(page) {
+    window.location.href = page;
+  }
+</script>
+
+</body>
+</html>
